@@ -54,7 +54,7 @@ with st.expander("Personal Information", expanded=True):
         help="Your age in years (1-100)."
     )
     sex = col2.radio(
-        'Sex', ['Male (1)', 'Female (0)'], index=0,
+        'Gender', ['Male', 'Female'], index=0,
         help="Select your biological sex. Male = 1, Female = 0."
     )
     sex_val = 1 if sex.startswith('Male') else 0 if sex.startswith('Female') else None
@@ -66,7 +66,7 @@ with st.expander("Personal Information", expanded=True):
 with st.expander("Medical Details", expanded=True):
     col4, col5, col6 = st.columns([1,1,1])
     cp_options = [
-        'Select...', 'Typical Angina (0)', 'Atypical Angina (1)', 'Non-anginal Pain (2)', 'Asymptomatic (3)'
+        'Select...', 'Typical Angina', 'Atypical Angina', 'Non-anginal Pain', 'Asymptomatic'
     ]
     cp = col4.selectbox(
         'Chest Pain Type', cp_options, index=0,
@@ -84,13 +84,13 @@ with st.expander("Medical Details", expanded=True):
     )
 
     fbs = col4.radio(
-        'Fasting Blood Sugar > 120 mg/dl', ['Yes (1)', 'No (0)'], index=0,
+        'Fasting Blood Sugar > 120 mg/dl', ['Yes', 'No'], index=0,
         help="Is fasting blood sugar > 120 mg/dl? Yes = 1, No = 0."
     )
     fbs_val = 1 if fbs.startswith('Yes') else 0 if fbs.startswith('No') else None
 
     restecg_options = [
-        'Select...', 'Normal (0)', 'ST-T Wave Abnormality (1)', 'Left Ventricular Hypertrophy (2)'
+        'Select...', 'Normal', 'ST-T Wave Abnormality', 'Left Ventricular Hypertrophy'
     ]
     restecg = col5.selectbox(
         'Resting ECG Results', restecg_options, index=0,
@@ -99,7 +99,7 @@ with st.expander("Medical Details", expanded=True):
     restecg_val = int(restecg.split('(')[-1][0]) if restecg != 'Select...' else None
 
     exang = col6.radio(
-        'Exercise Induced Angina', ['Yes (1)', 'No (0)'], index=0,
+        'Exercise Induced Angina', ['Yes', 'No'], index=0,
         help="Did you experience angina during exercise? Yes = 1, No = 0."
     )
     exang_val = 1 if exang.startswith('Yes') else 0 if exang.startswith('No') else None
@@ -110,7 +110,7 @@ with st.expander("Medical Details", expanded=True):
     )
 
     slope_options = [
-        'Select...', 'Upsloping (0)', 'Flat (1)', 'Downsloping (2)'
+        'Select...', 'Upsloping', 'Flat', 'Downsloping'
     ]
     slope = col5.selectbox(
         'Slope of Peak Exercise ST Segment', slope_options, index=0,
@@ -125,7 +125,7 @@ with st.expander("Medical Details", expanded=True):
     ca_val = int(ca) if ca != 'Select...' else None
 
     thal_options = [
-        'Select...', 'Normal (0)', 'Fixed Defect (1)', 'Reversible Defect (2)'
+        'Select...', 'Normal', 'Fixed Defect', 'Reversible Defect'
     ]
     thal = col4.selectbox(
         'Thalassemia', thal_options, index=0,
