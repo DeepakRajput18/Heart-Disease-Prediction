@@ -124,25 +124,36 @@ oldpeak = col4.number_input(
     help="ST depression induced by exercise relative to rest (0.0-10.0)."
 )
 
-slope_options = [
-    'Select...', 'Upsloping', 'Flat', 'Downsloping'
-]
+# Mapping for Slope (internal use only)
+slope_mapping = {
+    'Upsloping': 0,
+    'Flat': 1,
+    'Downsloping': 2
+}
+
+# Dropdown shows only labels
+slope_options = ['Select...'] + list(slope_mapping.keys())
+
 slope = col5.selectbox(
-    'Slope of Peak Exercise ST Segment', slope_options, index=0,
+    'Slope of Peak Exercise ST Segment',
+    slope_options,
+    index=0,
     help="Slope of the peak exercise ST segment: 0=Upsloping, 1=Flat, 2=Downsloping."
 )
-slope_val = None
-if slope != 'Select...':
-    slope_val = int(slope.split('-')[-1].strip())
 
+# Get numeric value internally
+slope_val = slope_mapping.get(slope) if slope in slope_mapping else None
 
-    ca = col6.selectbox(
-        'Number of Major Vessels Colored by Fluoroscopy', ['Select...', 0, 1, 2, 3], index=0,
-        help="Number of major vessels (0-3) colored by fluoroscopy."
-    )
-    ca_val = int(ca) if ca != 'Select...' else None
+# CA - Number of Major Vessels
+ca = col6.selectbox(
+    'Number of Major Vessels Colored by Fluoroscopy',
+    ['Select...', 0, 1, 2, 3],
+    index=0,
+    help="Number of major vessels (0-3) colored by fluoroscopy."
+)
+ca_val = int(ca) if ca != 'Select...' else None
 
-    # Define mapping first
+# Define mapping first
 thal_mapping = {
     'Normal': 0,
     'Fixed Defect': 1,
@@ -154,12 +165,15 @@ thal_options = ['Select...'] + list(thal_mapping.keys())
 
 # Create selectbox
 thal = col4.selectbox(
-    'Thalassemia', thal_options, index=0,
+    'Thalassemia',
+    thal_options,
+    index=0,
     help="Thalassemia type: 0=Normal, 1=Fixed Defect, 2=Reversible Defect."
 )
 
 # Get value
 thal_val = thal_mapping.get(thal) if thal in thal_mapping else None
+
 
 
 st.markdown("---")
