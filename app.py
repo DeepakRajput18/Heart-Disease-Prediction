@@ -65,14 +65,18 @@ with st.expander("Personal Information", expanded=True):
 
 with st.expander("Medical Details", expanded=True):
     col4, col5, col6 = st.columns([1,1,1])
-    cp_options = [
-        'Select...', 'Typical Angina', 'Atypical Angina', 'Non-anginal Pain', 'Asymptomatic'
-    ]
+    cp_mapping = {
+        'Typical Angina': 0,
+        'Atypical Angina': 1,
+        'Non-anginal Pain': 2,
+        'Asymptomatic': 3
+    }
+    cp_options = ['Select...'] + list(cp_mapping.keys())
     cp = col4.selectbox(
         'Chest Pain Type', cp_options, index=0,
         help="Type of chest pain: 0=Typical Angina, 1=Atypical Angina, 2=Non-anginal Pain, 3=Asymptomatic."
     )
-    cp_val = int(cp.split('(')[-1][0]) if cp != 'Select...' else None
+    cp_val = cp_mapping.get(cp) if cp in cp_mapping else None
 
     trestbps = col5.number_input(
         'Resting Blood Pressure (mm Hg)', min_value=80, max_value=200, value=None, format="%d",
