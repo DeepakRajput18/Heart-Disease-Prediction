@@ -94,33 +94,38 @@ with st.expander("Medical Details", expanded=True):
     fbs_val = 1 if fbs.startswith('Yes') else 0 if fbs.startswith('No') else None
 
     restecg_options = [
-        'Select...', 'Normal', 'ST-T Wave Abnormality', 'Left Ventricular Hypertrophy'
-    ]
-    restecg = col5.selectbox(
-        'Resting ECG Results', restecg_options, index=0,
-        help="Resting ECG: 0=Normal, 1=ST-T Wave Abnormality, 2=Left Ventricular Hypertrophy."
-    )
-    restecg_val = int(restecg.split('(')[-1][0]) if restecg != 'Select...' else None
+    'Select...', 'Normal - 0', 'ST-T Wave Abnormality - 1', 'Left Ventricular Hypertrophy - 2'
+]
+restecg = col5.selectbox(
+    'Resting ECG Results', restecg_options, index=0,
+    help="Resting ECG: 0=Normal, 1=ST-T Wave Abnormality, 2=Left Ventricular Hypertrophy."
+)
+restecg_val = None
+if restecg != 'Select...':
+    restecg_val = int(restecg.split('-')[-1].strip())
 
-    exang = col6.radio(
-        'Exercise Induced Angina', ['Yes', 'No'], index=0,
-        help="Did you experience angina during exercise? Yes = 1, No = 0."
-    )
-    exang_val = 1 if exang.startswith('Yes') else 0 if exang.startswith('No') else None
+exang = col6.radio(
+    'Exercise Induced Angina', ['Yes', 'No'], index=0,
+    help="Did you experience angina during exercise? Yes = 1, No = 0."
+)
+exang_val = 1 if exang.startswith('Yes') else 0 if exang.startswith('No') else None
 
-    oldpeak = col4.number_input(
-        'Oldpeak (ST depression)', min_value=0.0, max_value=10.0, value=None, format="%.2f",
-        help="ST depression induced by exercise relative to rest (0.0-10.0)."
-    )
+oldpeak = col4.number_input(
+    'Oldpeak (ST depression)', min_value=0.0, max_value=10.0, value=None, format="%.2f",
+    help="ST depression induced by exercise relative to rest (0.0-10.0)."
+)
 
-    slope_options = [
-        'Select...', 'Upsloping', 'Flat', 'Downsloping'
-    ]
-    slope = col5.selectbox(
-        'Slope of Peak Exercise ST Segment', slope_options, index=0,
-        help="Slope of the peak exercise ST segment: 0=Upsloping, 1=Flat, 2=Downsloping."
-    )
-    slope_val = int(slope.split('(')[-1][0]) if slope != 'Select...' else None
+slope_options = [
+    'Select...', 'Upsloping - 0', 'Flat - 1', 'Downsloping - 2'
+]
+slope = col5.selectbox(
+    'Slope of Peak Exercise ST Segment', slope_options, index=0,
+    help="Slope of the peak exercise ST segment: 0=Upsloping, 1=Flat, 2=Downsloping."
+)
+slope_val = None
+if slope != 'Select...':
+    slope_val = int(slope.split('-')[-1].strip())
+
 
     ca = col6.selectbox(
         'Number of Major Vessels Colored by Fluoroscopy', ['Select...', 0, 1, 2, 3], index=0,
