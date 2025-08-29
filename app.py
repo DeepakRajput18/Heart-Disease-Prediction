@@ -133,17 +133,23 @@ if slope != 'Select...':
     )
     ca_val = int(ca) if ca != 'Select...' else None
 
-    thal_mapping = {
+    # Define mapping first
+thal_mapping = {
     'Normal': 0,
     'Fixed Defect': 1,
     'Reversible Defect': 2
 }
 
+# Then create options list
 thal_options = ['Select...'] + list(thal_mapping.keys())
+
+# Create selectbox
 thal = col4.selectbox(
     'Thalassemia', thal_options, index=0,
     help="Thalassemia type: 0=Normal, 1=Fixed Defect, 2=Reversible Defect."
 )
+
+# Get value
 thal_val = thal_mapping.get(thal) if thal in thal_mapping else None
 
 
