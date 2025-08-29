@@ -94,7 +94,7 @@ with st.expander("Medical Details", expanded=True):
     fbs_val = 1 if fbs.startswith('Yes') else 0 if fbs.startswith('No') else None
 
     restecg_options = [
-    'Select...', 'Normal - 0', 'ST-T Wave Abnormality - 1', 'Left Ventricular Hypertrophy - 2'
+    'Select...', 'Normal', 'ST-T Wave Abnormality', 'Left Ventricular Hypertrophy'
 ]
 restecg = col5.selectbox(
     'Resting ECG Results', restecg_options, index=0,
@@ -116,7 +116,7 @@ oldpeak = col4.number_input(
 )
 
 slope_options = [
-    'Select...', 'Upsloping - 0', 'Flat - 1', 'Downsloping - 2'
+    'Select...', 'Upsloping', 'Flat', 'Downsloping'
 ]
 slope = col5.selectbox(
     'Slope of Peak Exercise ST Segment', slope_options, index=0,
