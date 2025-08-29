@@ -93,16 +93,25 @@ with st.expander("Medical Details", expanded=True):
     )
     fbs_val = 1 if fbs.startswith('Yes') else 0 if fbs.startswith('No') else None
 
-    restecg_options = [
-    'Select...', 'Normal', 'ST-T Wave Abnormality', 'Left Ventricular Hypertrophy'
-]
+    # Mapping for Resting ECG (only internal use)
+restecg_mapping = {
+    'Normal': 0,
+    'ST-T Wave Abnormality': 1,
+    'Left Ventricular Hypertrophy': 2
+}
+
+# Dropdown will show only text labels
+restecg_options = ['Select...'] + list(restecg_mapping.keys())
+
 restecg = col5.selectbox(
-    'Resting ECG Results', restecg_options, index=0,
+    'Resting ECG Results',
+    restecg_options,
+    index=0,
     help="Resting ECG: 0=Normal, 1=ST-T Wave Abnormality, 2=Left Ventricular Hypertrophy."
 )
-restecg_val = None
-if restecg != 'Select...':
-    restecg_val = int(restecg.split('-')[-1].strip())
+
+# Convert to numeric internally (hidden from user)
+restecg_val = restecg_mapping.get(restecg) if restecg in restecg_mapping else None
 
 exang = col6.radio(
     'Exercise Induced Angina', ['Yes', 'No'], index=0,
