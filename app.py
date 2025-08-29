@@ -133,14 +133,19 @@ if slope != 'Select...':
     )
     ca_val = int(ca) if ca != 'Select...' else None
 
-    thal_options = [
-        'Select...', 'Normal', 'Fixed Defect', 'Reversible Defect'
-    ]
-    thal = col4.selectbox(
-        'Thalassemia', thal_options, index=0,
-        help="Thalassemia type: 0=Normal, 1=Fixed Defect, 2=Reversible Defect."
-    )
-    thal_val = int(thal.split('(')[-1][0]) if thal != 'Select...' else None
+    thal_mapping = {
+    'Normal': 0,
+    'Fixed Defect': 1,
+    'Reversible Defect': 2
+}
+
+thal_options = ['Select...'] + list(thal_mapping.keys())
+thal = col4.selectbox(
+    'Thalassemia', thal_options, index=0,
+    help="Thalassemia type: 0=Normal, 1=Fixed Defect, 2=Reversible Defect."
+)
+thal_val = thal_mapping.get(thal) if thal in thal_mapping else None
+
 
 st.markdown("---")
 
