@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException, Depends, status, UploadFile, File
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, FileResponse
 import uvicorn
 import os
 from pathlib import Path
@@ -31,6 +31,17 @@ app.add_middleware(
 # Mount static files
 app.mount("/static", StaticFiles(directory="frontend"), name="static")
 
+# Add startup event to ensure database connection
+@app.on_event("startup")
+async def startup_event():
+    from .database import connect_to_mongo
+    await connect_to_mongo()
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    from .database import close_mongo_connection
+    await close_mongo_connection()
+
 # Security
 security = HTTPBearer()
 
@@ -40,8 +51,28 @@ ml_model = HeartDiseasePredictor()
 @app.get("/", response_class=HTMLResponse)
 async def read_root():
     """Serve the main HTML page"""
-    with open("frontend/index.html", "r") as f:
-        return HTMLResponse(content=f.read())
+    try:
+        with open("frontend/index.html", "r", encoding="utf-8") as f:
+            return HTMLResponse(content=f.read())
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="Frontend files not found")
+
+# Serve individual static files with proper MIME types
+@app.get("/static/css/{file_path:path}")
+async def serve_css(file_path: str):
+    """Serve CSS files with proper content type"""
+    file_location = f"frontend/css/{file_path}"
+    if os.path.exists(file_location):
+        return FileResponse(file_location, media_type="text/css")
+    raise HTTPException(status_code=404, detail="CSS file not found")
+
+@app.get("/static/js/{file_path:path}")
+async def serve_js(file_path: str):
+    """Serve JavaScript files with proper content type"""
+    file_location = f"frontend/js/{file_path}"
+    if os.path.exists(file_location):
+        return FileResponse(file_location, media_type="application/javascript")
+    raise HTTPException(status_code=404, detail="JavaScript file not found")
 
 @app.post("/api/auth/login", response_model=TokenResponse)
 async def login(credentials: LoginRequest, db=Depends(get_database)):
