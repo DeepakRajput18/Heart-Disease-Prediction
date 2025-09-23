@@ -73,12 +73,8 @@ class App {
     }
     
     checkAuth() {
-        if (this.token) {
-            // Skip token validation for now and go directly to dashboard
-            this.showDashboard();
-        } else {
-            this.showLogin();
-        }
+        // Always show login first for demo
+        this.showLogin();
     }
     
     async validateToken() {
@@ -156,26 +152,12 @@ class App {
     
     async loadDashboardData() {
         try {
-            this.showLoading();
-            
-            // Try to load stats, but don't fail if database is not available
-            try {
-                const stats = await this.apiCall('/dashboard/stats', 'GET');
-                if (stats.ok) {
-                    const data = await stats.json();
-                    this.updateDashboardStats(data);
-                    this.loadDashboardCharts();
-                } else {
-                    // Use mock data for development
-                    this.updateDashboardStats({
-                        total_patients: 0,
-                        high_risk_patients: 0,
-                        recent_predictions: 0,
-                        total_predictions: 0
-                    });
-                }
-            } catch (error) {
-                console.warn('Database not available, using mock data');
+            // Always try to load real data first
+            const response = await this.apiCall('/dashboard/stats', 'GET');
+            if (response.ok) {
+                const data = await response.json();
+                this.updateDashboardStats(data);
+            } else {
                 this.updateDashboardStats({
                     total_patients: 0,
                     high_risk_patients: 0,
@@ -183,11 +165,18 @@ class App {
                     total_predictions: 0
                 });
             }
+            
+            this.loadDashboardCharts();
+            
         } catch (error) {
             console.error('Dashboard error:', error);
-            this.showToast('Dashboard loaded in development mode', 'info');
-        } finally {
-            this.hideLoading();
+            // Use fallback data
+            this.updateDashboardStats({
+                total_patients: 0,
+                high_risk_patients: 0,
+                recent_predictions: 0,
+                total_predictions: 0
+            });
         }
     }
     
@@ -202,45 +191,35 @@ class App {
     }
     
     async loadDashboardCharts() {
+        // Load risk distribution chart
         try {
-            // Try to load real data, fallback to mock data
-            try {
-                const riskData = await this.apiCall('/analytics/risk-distribution', 'GET');
-                if (riskData.ok) {
-                    const data = await riskData.json();
-                    this.createRiskChart(data);
-                } else {
-                    this.createRiskChart([
-                        { risk_level: 'Low Risk', count: 15 },
-                        { risk_level: 'High Risk', count: 5 }
-                    ]);
-                }
-                
-                const timelineData = await this.apiCall('/analytics/predictions-timeline', 'GET');
-                if (timelineData.ok) {
-                    const data = await timelineData.json();
-                    this.createTimelineChart(data);
-                } else {
-                    this.createTimelineChart([
-                        { date: '2024-01-01', count: 3 },
-                        { date: '2024-01-02', count: 5 },
-                        { date: '2024-01-03', count: 2 }
-                    ]);
-                }
-            } catch (error) {
-                // Use mock data for development
-                this.createRiskChart([
-                    { risk_level: 'Low Risk', count: 15 },
-                    { risk_level: 'High Risk', count: 5 }
-                ]);
-                this.createTimelineChart([
-                    { date: '2024-01-01', count: 3 },
-                    { date: '2024-01-02', count: 5 },
-                    { date: '2024-01-03', count: 2 }
-                ]);
+            const riskResponse = await this.apiCall('/analytics/risk-distribution', 'GET');
+            if (riskResponse.ok) {
+                const riskData = await riskResponse.json();
+                this.createRiskChart(riskData);
             }
         } catch (error) {
-            console.error('Error loading charts:', error);
+            console.error('Error loading risk chart:', error);
+            this.createRiskChart([
+                { risk_level: 'Low Risk', count: 15 },
+                { risk_level: 'High Risk', count: 5 }
+            ]);
+        }
+        
+        // Load timeline chart
+        try {
+            const timelineResponse = await this.apiCall('/analytics/predictions-timeline', 'GET');
+            if (timelineResponse.ok) {
+                const timelineData = await timelineResponse.json();
+                this.createTimelineChart(timelineData);
+            }
+        } catch (error) {
+            console.error('Error loading timeline chart:', error);
+            this.createTimelineChart([
+                { date: '2024-01-01', count: 3 },
+                { date: '2024-01-02', count: 5 },
+                { date: '2024-01-03', count: 2 }
+            ]);
         }
     }
     
