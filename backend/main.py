@@ -4,7 +4,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse, FileResponse
 from datetime import datetime, timedelta
-import uvicorn
 import os
 from pathlib import Path
 from typing import List, Optional
@@ -238,6 +237,7 @@ async def serve_js(file_path: str):
     raise HTTPException(status_code=404, detail="JavaScript file not found")
 
 if __name__ == "__main__":
+    import uvicorn
     print("🚀 Starting Heart Disease Prediction System...")
     print("🌐 Server will be available at: http://localhost:8000")
     print("📧 Login credentials: admin@heartpredict.com / admin123")
