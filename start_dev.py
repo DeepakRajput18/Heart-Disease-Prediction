@@ -5,7 +5,6 @@ Quick development server starter
 
 import subprocess
 import sys
-import os
 from pathlib import Path
 
 def main():
@@ -14,7 +13,13 @@ def main():
     
     # Change to project directory
     project_root = Path(__file__).parent
-    os.chdir(project_root)
+    import os
+    try:
+        os.chdir(project_root)
+    except AttributeError as e:
+        print(f"❌ OS module error: {e}")
+        print("💡 Try running: python -c 'import os; print(os.__file__)'")
+        return
     
     # Check Python version
     if sys.version_info < (3, 8):
