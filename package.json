@@ -1,0 +1,31 @@
+{
+  "name": "heart-disease-prediction-system",
+  "version": "1.0.0",
+  "description": "Professional heart disease prediction system for medical professionals",
+  "main": "backend/main.py",
+  "scripts": {
+    "dev": "python run_server.py",
+    "start": "python minimal_server.py",
+    "simple": "python ultra_simple.py",
+    "install": "pip install -r requirements.txt",
+    "setup": "python start.py",
+    "test": "pytest tests/ -v",
+    "init-db": "python init_db.py",
+    "docker-build": "docker build -t heart-disease-app .",
+    "docker-run": "docker run -p 8000:8000 heart-disease-app",
+    "docker-compose-up": "docker-compose up -d",
+    "docker-compose-down": "docker-compose down"
+  },
+  "keywords": [
+    "heart-disease",
+    "prediction",
+    "medical",
+    "fastapi",
+    "machine-learning"
+  ],
+  "author": "Heart Disease Prediction Team",
+  "license": "MIT",
+  "engines": {
+    "python": ">=3.8"
+  }
+}

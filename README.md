@@ -62,6 +62,28 @@ A comprehensive, production-ready web application for predicting heart disease r
 - MongoDB 4.4+
 - Docker & Docker Compose (optional)
 
+### ⚡ Super Quick Start (Recommended)
+
+**Option 1: Auto-fix and start**
+```bash
+python fix_commands.py
+python start_server.py
+```
+
+**Option 2: Use the universal command runner**
+```bash
+python run_commands.py start
+```
+
+**Option 3: Platform-specific scripts**
+```bash
+# Windows
+start.bat
+
+# Linux/Mac
+./start.sh
+```
+
 ### Local Development
 
 1. **Clone the repository**
@@ -72,7 +94,14 @@ cd heart-disease-prediction
 
 2. **Install dependencies**
 ```bash
+# Automatic (recommended)
+python run_commands.py install
+
+# Manual
 pip install -r requirements.txt
+
+# Minimal (if full requirements fail)
+pip install fastapi uvicorn[standard]
 ```
 
 3. **Set up environment variables**
@@ -83,12 +112,21 @@ cp .env.example .env
 
 4. **Initialize the database**
 ```bash
+python run_commands.py init-db
+# OR
 python init_db.py
 ```
 
 5. **Start the application**
 ```bash
+# Recommended - auto-detects best server
+python start_server.py
+
+# Alternative options
+python run_commands.py start
 uvicorn backend.main:app --reload --host 0.0.0.0 --port 8000
+python ultra_simple.py
+python minimal_server.py
 ```
 
 6. **Access the application**
@@ -110,6 +148,37 @@ docker-compose exec backend python init_db.py
 3. **Access the application**
 - Open http://localhost
 - Login with default credentials
+
+## 🔧 Troubleshooting Commands
+
+If commands are not working, try these solutions:
+
+### Common Issues and Fixes
+
+1. **Commands not found or failing**
+```bash
+python fix_commands.py  # Auto-fixes common issues
+```
+
+2. **Dependencies installation fails**
+```bash
+python run_commands.py install  # Tries multiple methods
+# OR
+pip install fastapi uvicorn[standard]  # Minimal requirements
+```
+
+3. **Server won't start**
+```bash
+python start_server.py  # Tries multiple server options
+python start_server.py --port 8001  # Try different port
+```
+
+4. **Use Make commands (if available)**
+```bash
+make help     # Show all available commands
+make start    # Start server
+make install  # Install dependencies
+```
 
 ## 🏗️ Architecture
 
@@ -211,6 +280,38 @@ ACCESS_TOKEN_EXPIRE_MINUTES=30
 - **Database**: MongoDB 7.0
 - **Proxy**: Nginx with SSL support
 - **Volumes**: Persistent data storage
+
+## 📋 Available Commands
+
+### Using run_commands.py (Recommended)
+```bash
+python run_commands.py install     # Install dependencies
+python run_commands.py setup       # Full setup (install + init-db)
+python run_commands.py start       # Start server (auto-detect)
+python run_commands.py simple      # Start ultra simple server
+python run_commands.py minimal     # Start minimal server
+python run_commands.py full        # Start full server
+python run_commands.py test        # Run tests
+python run_commands.py init-db     # Initialize database
+```
+
+### Using Make (if available)
+```bash
+make help           # Show all commands
+make install        # Install dependencies
+make setup          # Full setup
+make start          # Start server
+make test           # Run tests
+make clean          # Clean temporary files
+```
+
+### Direct Python Commands
+```bash
+python ultra_simple.py      # Ultra simple server (minimal deps)
+python minimal_server.py    # Minimal server with more features
+python start_server.py      # Universal server starter
+python fix_commands.py      # Fix command issues
+```
 
 ## 🛡️ Security Features
 

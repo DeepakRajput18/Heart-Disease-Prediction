@@ -1,9 +1,39 @@
 #!/usr/bin/env python3
 """
-Ultra simple server - minimal dependencies
+Ultra simple server - minimal dependencies with better error handling
 """
 
+import sys
+import os
+from pathlib import Path
+
+def check_dependencies():
+    """Check if required dependencies are available"""
+    try:
+        import fastapi
+        import uvicorn
+        return True
+    except ImportError as e:
+        print(f"❌ Missing dependency: {e}")
+        print("📦 Installing required packages...")
+        
+        import subprocess
+        try:
+            subprocess.check_call([
+                sys.executable, "-m", "pip", "install", 
+                "fastapi", "uvicorn[standard]"
+            ])
+            print("✅ Dependencies installed!")
+            return True
+        except subprocess.CalledProcessError:
+            print("❌ Failed to install dependencies")
+            print("💡 Please run: pip install fastapi uvicorn[standard]")
+            return False
+
 try:
+    if not check_dependencies():
+        sys.exit(1)
+        
     from fastapi import FastAPI
     from fastapi.responses import HTMLResponse
     import uvicorn
@@ -176,10 +206,20 @@ try:
         print("📚 API Documentation: http://localhost:8000/docs")
         print("🔐 Login Page: http://localhost:8000/login")
         print("🛑 Press Ctrl+C to stop")
-        uvicorn.run(app, host="0.0.0.0", port=8000)
+        
+        try:
+            uvicorn.run(app, host="0.0.0.0", port=8000, log_level="info")
+        except KeyboardInterrupt:
+            print("\n🛑 Server stopped by user")
+        except Exception as e:
+            print(f"❌ Server error: {e}")
+            print("💡 Try running on a different port:")
+            print("   python ultra_simple.py --port 8001")
 
 except ImportError as e:
     print(f"❌ Missing dependency: {e}")
-    print("📦 Please install: pip install fastapi uvicorn")
+    print("📦 Please install: pip install fastapi uvicorn[standard]")
+    print("💡 Or run: python fix_commands.py")
 except Exception as e:
     print(f"❌ Error: {e}")
+    print("💡 Try running: python fix_commands.py")
