@@ -7,7 +7,7 @@
     "dev": "python run_server.py",
     "start": "python minimal_server.py",
     "simple": "python ultra_simple.py",
-    "install": "pip install -r requirements.txt",
+    "install": "python -m pip install -r requirements.txt",
     "setup": "python start.py",
     "test": "pytest tests/ -v",
     "init-db": "python init_db.py",
