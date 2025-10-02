@@ -27,48 +27,63 @@ def detect_python_command():
 
 def detect_pip_command():
     """Detect the correct pip command"""
-    pip_commands = ['pip', 'pip3', 'py -m pip']
-    
-    for cmd in pip_commands:
+    pip_commands = [
+        ('python3 -m pip', ['python3', '-m', 'pip', '--version']),
+        ('pip3', ['pip3', '--version']),
+        ('pip', ['pip', '--version']),
+        ('py -m pip', ['py', '-m', 'pip', '--version'])
+    ]
+
+    for cmd_name, cmd_list in pip_commands:
         try:
-            if 'py -m pip' in cmd:
-                result = subprocess.run(['py', '-m', 'pip', '--version'], capture_output=True, text=True)
-            else:
-                result = subprocess.run([cmd, '--version'], capture_output=True, text=True)
-            
+            result = subprocess.run(cmd_list, capture_output=True, text=True)
+
             if result.returncode == 0:
-                print(f"✅ Found pip: {cmd}")
-                return cmd
+                print(f"✅ Found pip: {cmd_name}")
+                return cmd_name
         except FileNotFoundError:
             continue
-    
+
     print("❌ No suitable pip found")
     return None
 
 def fix_requirements():
     """Fix requirements installation"""
     print("🔧 Fixing requirements installation...")
-    
+
     python_cmd = detect_python_command()
     pip_cmd = detect_pip_command()
-    
-    if not python_cmd or not pip_cmd:
-        print("❌ Cannot fix requirements - Python/pip not found")
+
+    if not python_cmd:
+        print("❌ Cannot fix requirements - Python not found")
         return False
-    
+
+    if not pip_cmd:
+        print("🔧 Attempting to install pip...")
+        try:
+            subprocess.run([python_cmd, '-m', 'ensurepip', '--default-pip'], check=True)
+            print("✅ pip installed successfully")
+            pip_cmd = f"{python_cmd} -m pip"
+        except subprocess.CalledProcessError:
+            print("❌ Could not install pip")
+            return False
+
     # Try minimal requirements first
     minimal_reqs = ["fastapi", "uvicorn[standard]"]
-    
+
     for req in minimal_reqs:
         try:
             if 'py -m pip' in pip_cmd:
                 subprocess.run(['py', '-m', 'pip', 'install', req], check=True)
+            elif 'python' in pip_cmd:
+                parts = pip_cmd.split()
+                subprocess.run(parts + ['install', req], check=True)
             else:
                 subprocess.run([pip_cmd, 'install', req], check=True)
             print(f"✅ Installed {req}")
         except subprocess.CalledProcessError:
             print(f"❌ Failed to install {req}")
-    
+
     return True
 
 def create_simple_start_script():

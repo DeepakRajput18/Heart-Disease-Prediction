@@ -31,37 +31,39 @@ help:
 # Installation
 install:
 	@echo "📦 Installing dependencies..."
-	@python -m pip install --upgrade pip || pip install --upgrade pip || pip3 install --upgrade pip
-	@python -m pip install -r requirements.txt || pip install -r requirements.txt || pip3 install -r requirements.txt
+	@python3 -m pip install -r requirements.txt 2>/dev/null || \
+	 pip3 install -r requirements.txt 2>/dev/null || \
+	 pip install -r requirements.txt 2>/dev/null || \
+	 echo "⚠️ Could not install dependencies. Please install pip first or use Docker."
 
 # Setup
 setup: install
 	@echo "🔧 Setting up database..."
-	@python init_db.py || python3 init_db.py || echo "⚠️ Database setup skipped"
+	@python3 init_db.py || echo "⚠️ Database setup skipped"
 
 # Server commands
 start:
-	@python run_commands.py start
+	@python3 run_commands.py start
 
 dev:
-	@python run_commands.py dev
+	@python3 run_commands.py dev
 
 simple:
-	@python run_commands.py simple
+	@python3 run_commands.py simple
 
 minimal:
-	@python run_commands.py minimal
+	@python3 run_commands.py minimal
 
 full:
-	@python run_commands.py full
+	@python3 run_commands.py full
 
 # Testing
 test:
-	@python run_commands.py test
+	@python3 run_commands.py test
 
 # Database
 init-db:
-	@python run_commands.py init-db
+	@python3 run_commands.py init-db
 
 # Cleanup
 clean:
@@ -74,16 +76,16 @@ clean:
 
 # Docker commands
 docker-build:
-	@python run_commands.py docker-build
+	@python3 run_commands.py docker-build
 
 docker-run:
-	@python run_commands.py docker-run
+	@python3 run_commands.py docker-run
 
 docker-compose-up:
-	@python run_commands.py docker-compose-up
+	@python3 run_commands.py docker-compose-up
 
 docker-compose-down:
-	@python run_commands.py docker-compose-down
+	@python3 run_commands.py docker-compose-down
 
 # Windows compatibility
 install-windows:
