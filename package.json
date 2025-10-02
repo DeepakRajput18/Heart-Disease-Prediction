@@ -4,9 +4,9 @@
   "description": "Professional heart disease prediction system for medical professionals",
   "main": "backend/main.py",
   "scripts": {
-    "dev": "python3 run_server.py",
-    "start": "python3 minimal_server.py",
-    "simple": "python3 ultra_simple.py",
+    "dev": "python3 standalone_server.py",
+    "start": "python3 standalone_server.py",
+    "simple": "python3 standalone_server.py",
     "setup": "python3 start.py",
     "test": "python3 -m pytest tests/ -v 2>/dev/null || pytest tests/ -v 2>/dev/null || echo 'Install pytest to run tests'",
     "init-db": "python3 init_db.py",
